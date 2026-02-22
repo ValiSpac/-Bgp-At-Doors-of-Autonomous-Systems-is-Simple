@@ -167,18 +167,25 @@ P1/
 Configuration is what is expected for p1, however, you must make sure that the config persists for the hostname and interface
 
 - Host:
-```echo "auto eth0
+```
+echo "auto eth0
 iface eth0 inet static
 address 192.168.10.2
 netmask 255.255.255.0
-gateway 192.168.10.1" > /etc/network/interfaces```
+gateway 192.168.10.1" > /etc/network/interfaces
+```
 
 - Router:
-```vtysh
+```
+vtysh
 configure terminal
 interface eth0
 ip address 192.168.10.1/24
 exit
 end
 write
-exit```
+exit
+```
+
+# Final Note
+Actually just use the config files in the directory lol
