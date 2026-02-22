@@ -54,10 +54,6 @@ Add the two Docker images:
 | Name | `router_<login>` |
 | Start command | `/bin/bash` |
 
-Enable:
-- ✔ Privileged mode
-- ✔ Console support
-
 ---
 
 ## 4. Build the Topology
@@ -68,7 +64,7 @@ Enable:
 
 Resulting topology:
 ```
-host_<login>-1  ←→  router_<login>
+host_<login>-1  <->  router_<login>
 ```
 
 ---
@@ -144,7 +140,7 @@ From **router:**
 ping 192.168.10.2
 ```
 
-Both sides must reply.
+Both sides must reply
 
 ---
 
@@ -166,3 +162,23 @@ P1/
  ├── _<login>-2_router
  └── P1_export.zip
 ```
+
+# Notice
+Configuration is what is expected for p1, however, you must make sure that the config persists for the hostname and interface
+
+- Host:
+```echo "auto eth0
+iface eth0 inet static
+address 192.168.10.2
+netmask 255.255.255.0
+gateway 192.168.10.1" > /etc/network/interfaces```
+
+- Router:
+```vtysh
+configure terminal
+interface eth0
+ip address 192.168.10.1/24
+exit
+end
+write
+exit```
