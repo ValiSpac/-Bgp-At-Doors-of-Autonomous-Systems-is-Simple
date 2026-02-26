@@ -1,0 +1,5 @@
+FROM frrouting/frr:latest
+
+RUN touch /etc/frr/frr.conf && chown -R frr:frr /etc/frr
+
+COPY ./_vpac_router_daemons /etc/frr/daemons

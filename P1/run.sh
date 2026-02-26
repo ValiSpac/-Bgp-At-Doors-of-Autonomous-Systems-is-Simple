@@ -32,14 +32,14 @@ sudo apt install -y docker-ce
 
 sudo usermod -aG ubridge,libvirt,kvm,wireshark,docker $(whoami)
 
-#Pull docker images router/host
-sudo docker pull alpine
-#Alpine based img, most routing protocols allready installed
-sudo docker pull frrouting/frr
-
 sudo systemctl start docker
+
 #Make sure port for gns3 is not in used, backup port fails 99% of the time
-fuser -k 3080/tcp
+#fuser -k 3080/tcp
 
 #Make sure ubridge can manipulate network interfaces
 sudo setcap cap_net_admin,cap_net_raw=eip $(which ubridge)
+
+#build custom docker images
+docker build --no-cache -f _vpac_router -t vpac_router .
+docker build --no-cache -f _vpac_host -t vpac_host .
