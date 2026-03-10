@@ -1,0 +1,62 @@
+#Open vtysh and config terminal
+vtysh
+conf t
+
+#Config eth0: assign ip addr and assign the interface to the OSPF area 0
+interface eth0
+#/30 gives exactly 2 usable hosts, point to point link between 2 routers
+ip address 10.1.1.1/30
+#Any router directly connected via this interface will become an OSPF neigbor and can exchange routing info
+ip ospf area 0
+
+#Config eth1, similar to eth0
+interface eth1
+ip address 10.1.1.5/30
+ip ospf area 0
+
+#Config interface eth2, similar to eth0
+interface eth2
+ip address 10.1.1.9/30
+ip ospf area 0
+
+#lo is virtual, always up interface
+interface lo
+#/32 means a host route, just IP no subnet
+#BGP will use lo as its soource address
+ip address 1.1.1.1/32
+#OSPF will advertise it so all other routers know how to reach 1.1.1.1
+ip ospf area 0
+
+###BGP config
+
+#Start BGP and declare that this router belongs to AS 1
+router bgp 1
+
+#Create peer-group named ibgp(like a template, define settings once and apply them to all neigbours at once)
+neighbor ibgp peer-group
+
+#All nehbours i nthe ibgp belong to AS1
+neighbor ibgp remote-as 1
+
+#Force BGP sessions to use loopback interface as the source IP
+neighbor ibgp update-source lo
+
+#Tell BGP to dynamically accept any neibour whose lo ip falls in the subnet
+bgp listen range 1.1.1.0/29 peer-group ibgp
+
+###BGP EVPN address family
+
+#Activate EVPN address familly. EVPN runs over BGP and is used to carry layer 2 and layer 3 VPN info
+address-family l2vpn evpn
+
+#Enable ibgp group
+neighbor ibgp activate t oexchange EVPN routes
+
+#Make all ibgp peers  route-reflector clients of this router. Normally full mesh is required, but having this RR will reflect the routing information to all neigbours
+neighbor ibgp route-reflector-client
+
+#Exit the EVPN address family config context and returns to the general BGP
+exit-address-family
+
+#Enable OSPF for this router
+router ospf
