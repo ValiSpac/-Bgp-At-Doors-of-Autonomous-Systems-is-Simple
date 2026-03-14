@@ -49,8 +49,8 @@ bgp listen range 1.1.1.0/29 peer-group ibgp
 #Activate EVPN address familly. EVPN runs over BGP and is used to carry layer 2 and layer 3 VPN info
 address-family l2vpn evpn
 
-#Enable ibgp group
-neighbor ibgp activate t oexchange EVPN routes
+#Enable ibgp group to exchange EVPN routes
+neighbor ibgp activate
 
 #Make all ibgp peers  route-reflector clients of this router. Normally full mesh is required, but having this RR will reflect the routing information to all neigbours
 neighbor ibgp route-reflector-client
