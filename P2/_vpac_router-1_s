@@ -1,3 +1,6 @@
+#Assign ips to the interfaces
+ip addr add 10.1.1.1/24 dev eth0
+ip addr add 20.1.1.1/24 dev br0
 
 #First we create the bridge interface and vxlan interface
 ip link add br0 type bridge
@@ -7,10 +10,6 @@ ip link add name vxlan10 type vxlan id 10 dev eth0 remote 10.1.1.2 local 10.1.1.
 #Bring up inetrfaces
 ip link set dev br0 up
 ip link set dev vxlan10 up
-
-#Assign ips to the interfaces
-ip addr add 10.1.1.1/24 dev eth0
-ip addr add 20.1.1.1/24 dev vxlan10
 
 #Bridge control, add the created bridge to an available interface to create the communication link between the vxlan which will encapsulate the layer 2 package in a UDP package, eventualy creating a VTEP(VXLAN tunnel enpoints)
 brctl addif br0 eth1
